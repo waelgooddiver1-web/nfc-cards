@@ -3,68 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <title>Wael Mohamed – MBME</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Icons -->
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
   <style>
-    body {
-      margin: 0;
-      background: #f2f2f5;
-      font-family: "Segoe UI", Tahoma, sans-serif;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      min-height: 100vh;
-      padding-left: 40px;
+    :root {
+      --purple: #5B2D86;
+      --dark: #1E1E1E;
+      --bg: #f2f2f5;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+    }
+
+    /* Card */
     .card {
-      width: 360px;
-      background: linear-gradient(135deg, #1E1E1E 45%, #ffffff 45%);
-      border-radius: 18px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      width: 100%;
+      max-width: 380px;
+      background: linear-gradient(135deg, var(--dark) 42%, #ffffff 42%);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
       overflow: hidden;
     }
 
     /* Header */
     .header {
       padding: 22px;
-      color: #fff;
       display: flex;
       align-items: center;
       gap: 12px;
+      color: #fff;
     }
 
     .logo {
-      width: 55px;
+      width: 56px;
+      height: auto;
+      flex-shrink: 0;
     }
 
     .company {
       font-size: 13px;
       letter-spacing: 1px;
-      opacity: 0.85;
+      opacity: 0.9;
     }
 
     /* Content */
     .content {
-      padding: 24px;
       background: #fff;
+      padding: 22px;
     }
 
     h1 {
       margin: 0;
-      font-size: 20px;
+      font-size: clamp(18px, 4vw, 22px);
       color: #000;
-      text-align: left;
     }
 
     .title {
-      color: #5B2D86;
+      margin: 6px 0 18px;
+      color: var(--purple);
       font-weight: 600;
-      margin: 6px 0 20px;
-      text-align: left;
+      font-size: clamp(13px, 3.5vw, 15px);
     }
 
     .item {
@@ -74,13 +88,15 @@
       margin: 10px 0;
       color: #333;
       text-decoration: none;
-      font-size: 14px;
+      font-size: clamp(13px, 3.5vw, 14px);
+      word-break: break-word;
     }
 
     .item i {
-      color: #5B2D86;
+      color: var(--purple);
       font-size: 16px;
       width: 18px;
+      flex-shrink: 0;
     }
 
     .ext {
@@ -88,15 +104,31 @@
       color: #777;
     }
 
+    /* QR */
     .qr {
-      margin-top: 20px;
-      text-align: left;
+      margin-top: 22px;
+      display: flex;
+      justify-content: flex-start;
     }
 
     canvas {
-      border: 6px solid #5B2D86;
-      border-radius: 12px;
+      width: 100%;
+      max-width: 160px;
+      height: auto;
+      border: 6px solid var(--purple);
+      border-radius: 14px;
       padding: 6px;
+    }
+
+    /* Small screens */
+    @media (max-width: 480px) {
+      body {
+        justify-content: center;
+      }
+
+      .qr {
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -129,12 +161,15 @@
 
   <!-- Supabase -->
   <script>
-      const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
-      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
-      const PROFILE_SLUG = "wael";
+    const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
+    const SUPABASE_KEY = "YOUR_ANON_KEY";
+    const PROFILE_SLUG = "wael";
 
     fetch(
-      SUPABASE_URL + "/rest/v1/cards?select=*&profile_slug=eq." + PROFILE_SLUG + "&is_active=eq.true",
+      SUPABASE_URL +
+      "/rest/v1/cards?select=*&profile_slug=eq." +
+      PROFILE_SLUG +
+      "&is_active=eq.true",
       {
         headers: {
           apikey: SUPABASE_KEY,
@@ -177,7 +212,7 @@
         document.getElementById("qr"),
         window.location.href,
         {
-          width: 130,
+          width: 160,
           color: {
             dark: "#5B2D86",
             light: "#FFFFFF"
