@@ -1,26 +1,24 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <title>Wael Mohamed – MBME</title>
 
   <!-- Icons -->
   <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
   <style>
-     body {
+    body {
       margin: 0;
       background: #f2f2f5;
       font-family: "Segoe UI", Tahoma, sans-serif;
-    
       display: flex;
-      justify-content: flex-start;  /* يسار */
-      align-items: flex-start;
-    
-      padding: 40px;   /* مسافة جميلة من الحواف */
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+      padding-left: 40px;
     }
-
 
     .card {
       width: 360px;
@@ -30,28 +28,26 @@
       overflow: hidden;
     }
 
+    /* Header */
     .header {
-      padding: 24px;
+      padding: 22px;
       color: #fff;
       display: flex;
-      justify-content: flex-start; /* يسار */
       align-items: center;
       gap: 12px;
     }
 
-
     .logo {
-      width: 48px;
-      margin: 0;
+      width: 55px;
     }
 
     .company {
-      font-size: 14px;
+      font-size: 13px;
       letter-spacing: 1px;
       opacity: 0.85;
-      text-align: left;
     }
 
+    /* Content */
     .content {
       padding: 24px;
       background: #fff;
@@ -61,17 +57,20 @@
       margin: 0;
       font-size: 20px;
       color: #000;
+      text-align: left;
     }
 
     .title {
       color: #5B2D86;
       font-weight: 600;
       margin: 6px 0 20px;
+      text-align: left;
     }
 
     .item {
       display: flex;
       align-items: center;
+      gap: 10px;
       margin: 10px 0;
       color: #333;
       text-decoration: none;
@@ -79,14 +78,19 @@
     }
 
     .item i {
-      width: 28px;
       color: #5B2D86;
       font-size: 16px;
+      width: 18px;
+    }
+
+    .ext {
+      font-size: 12px;
+      color: #777;
     }
 
     .qr {
-      text-align: center;
       margin-top: 20px;
+      text-align: left;
     }
 
     canvas {
@@ -101,88 +105,91 @@
 
   <div class="card">
 
+    <!-- Header -->
     <div class="header">
       <img src="logo.png" class="logo" alt="MBME Logo">
       <div class="company">MBME GROUP</div>
     </div>
 
+    <!-- Content -->
     <div class="content">
-
-      <!-- 🔴 هذا هو المكان الصحيح -->
       <div id="profile">
-        <p>جاري التحميل...</p>
+        <p>Loading...</p>
       </div>
 
       <div class="qr">
         <canvas id="qr"></canvas>
       </div>
-
     </div>
 
   </div>
 
-  <!-- scripts هنا فقط -->
-</body>
+  <!-- QR -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
-<!-- QR -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <!-- Supabase -->
+  <script>
+    const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
+    const SUPABASE_KEY = "YOUR_ANON_KEY";
+    const PROFILE_SLUG = "wael";
 
-<!-- Supabase -->
-<script>
-const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
-const PROFILE_SLUG = "wael";
+    fetch(
+      SUPABASE_URL + "/rest/v1/cards?select=*&profile_slug=eq." + PROFILE_SLUG + "&is_active=eq.true",
+      {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: "Bearer " + SUPABASE_KEY
+        }
+      }
+    )
+    .then(res => res.json())
+    .then(data => {
+      if (!data || data.length === 0) {
+        document.getElementById("profile").innerHTML =
+          "<p>Profile not found</p>";
+        return;
+      }
 
-fetch(
-  `${SUPABASE_URL}/rest/v1/cards?select=*&profile_slug=eq.${PROFILE_SLUG}&is_active=eq.true`,
-  {
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`
-    }
-  }
-)
-.then(res => res.json())
-.then(data => {
-  if (!data || data.length === 0) {
-    document.getElementById("profile").innerHTML = "<p>لم يتم العثور على البطاقة</p>";
-    return;
-  }
+      const c = data[0];
 
-  const c = data[0];
+      document.getElementById("profile").innerHTML = `
+        <h1>${c.full_name}</h1>
+        <div class="title">${c.job_title}</div>
 
-  document.getElementById("profile").innerHTML = `
-    <h1>${c.full_name}</h1>
-    <div class="title">${c.job_title}</div>
+        <a class="item" href="tel:${c.phone}">
+          <i class="fa-solid fa-phone"></i>
+          ${c.phone}
+          ${c.ext ? `<span class="ext">(Ext ${c.ext})</span>` : ""}
+        </a>
 
-  <a class="item" href="tel:${c.phone}">
-    <i class="fa-solid fa-phone"></i>
-    اتصال
-    ${c.ext ? `<span style="font-size:12px; color:#777;"> (Ext ${c.ext})</span>` : ""}
-  </a>
+        <a class="item" href="https://wa.me/${c.whatsapp}">
+          <i class="fa-brands fa-whatsapp"></i>
+          WhatsApp
+        </a>
 
-    <a class="item" href="https://wa.me/${c.whatsapp}">
-      <i class="fa-brands fa-whatsapp"></i> واتساب
-    </a>
+        <a class="item" href="mailto:${c.email}">
+          <i class="fa-solid fa-envelope"></i>
+          ${c.email}
+        </a>
+      `;
 
-    <a class="item" href="mailto:${c.email}">
-      <i class="fa-solid fa-envelope"></i> بريد إلكتروني
-    </a>
-  `;
-
-  QRCode.toCanvas(
-    document.getElementById("qr"),
-    window.location.href,
-    {
-      width: 130,
-      color: { dark: "#5B2D86", light: "#FFFFFF" }
-    }
-  );
-})
-.catch(() => {
-  document.getElementById("profile").innerHTML = "<p>خطأ في الاتصال</p>";
-});
-</script>
+      QRCode.toCanvas(
+        document.getElementById("qr"),
+        window.location.href,
+        {
+          width: 130,
+          color: {
+            dark: "#5B2D86",
+            light: "#FFFFFF"
+          }
+        }
+      );
+    })
+    .catch(() => {
+      document.getElementById("profile").innerHTML =
+        "<p>Connection error</p>";
+    });
+  </script>
 
 </body>
 </html>
