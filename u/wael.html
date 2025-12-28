@@ -155,9 +155,11 @@ fetch(
     <h1>${c.full_name}</h1>
     <div class="title">${c.job_title}</div>
 
-    <a class="item" href="tel:${c.phone}">
-      <i class="fa-solid fa-phone"></i> اتصال
-    </a>
+  <a class="item" href="tel:${c.phone}">
+    <i class="fa-solid fa-phone"></i>
+    اتصال
+    ${c.ext ? `<span style="font-size:12px; color:#777;"> (Ext ${c.ext})</span>` : ""}
+  </a>
 
     <a class="item" href="https://wa.me/${c.whatsapp}">
       <i class="fa-brands fa-whatsapp"></i> واتساب
