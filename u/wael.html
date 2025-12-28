@@ -9,15 +9,18 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
   <style>
-    body {
+     body {
       margin: 0;
       background: #f2f2f5;
       font-family: "Segoe UI", Tahoma, sans-serif;
+    
       display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      justify-content: flex-start;  /* يسار */
+      align-items: flex-start;
+    
+      padding: 40px;   /* مسافة جميلة من الحواف */
     }
+
 
     .card {
       width: 360px;
@@ -30,17 +33,23 @@
     .header {
       padding: 24px;
       color: #fff;
+      display: flex;
+      justify-content: flex-start; /* يسار */
+      align-items: center;
+      gap: 12px;
     }
 
+
     .logo {
-      width: 60px;
-      margin-bottom: 12px;
+      width: 48px;
+      margin: 0;
     }
 
     .company {
       font-size: 14px;
       letter-spacing: 1px;
       opacity: 0.85;
+      text-align: left;
     }
 
     .content {
