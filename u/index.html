@@ -197,6 +197,15 @@ fetch(`${SUPABASE_URL}/rest/v1/cards_with_url?profile_slug=eq.${slug}`, {
     <h1 class="name">${u.full_name}</h1>
     <div class="title">${u.job_title}</div>
 
+<a class="item" href="mailto:${u.email}">
+  <i class="fa-solid fa-envelope"></i>
+  ${u.email}
+</a>
+
+<div class="signature">
+  We are pleased and honored to engage with you
+</div>
+
     <a class="item" href="tel:${u.phone}">
       <i class="fa-solid fa-phone"></i>
       ${u.phone} (Ext ${u.ext})
