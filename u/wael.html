@@ -1,9 +1,10 @@
 <div id="profile">
   <p>جاري التحميل...</p>
 </div>
+
 <script>
 const SUPABASE_URL = "https://pltzgjgprvgajdxkzqd.supabase.co";
-const SUPBASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
 const PROFILE_SLUG = "wael";
 
 fetch(
@@ -15,7 +16,6 @@ fetch(
     }
   }
 )
-
 .then(res => res.json())
 .then(data => {
   if (!data || data.length === 0) {
@@ -27,12 +27,13 @@ fetch(
   document.getElementById("profile").innerHTML = `
     <h1>${c.full_name}</h1>
     <p>${c.job_title}</p>
-    <a href="tel:${c.phone}">📞 اتصال</a>
-    <a href="https://wa.me/${c.whatsapp}">💬 واتساب</a>
+    <a href="tel:${c.phone}">📞 اتصال</a><br>
+    <a href="https://wa.me/${c.whatsapp}">💬 واتساب</a><br>
     <a href="mailto:${c.email}">✉️ بريد إلكتروني</a>
   `;
 })
-.catch(() => {
+.catch(err => {
+  console.error(err);
   document.getElementById("profile").innerHTML = "<p>خطأ في الاتصال</p>";
 });
 </script>
