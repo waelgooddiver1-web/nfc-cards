@@ -1,10 +1,13 @@
+<div id="profile">
+  <p>جاري التحميل...</p>
+</div>
 <script>
 const SUPABASE_URL = "https://pltzgjgprvgajdxkzqd.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+const SUPBASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
 const PROFILE_SLUG = "wael";
 
 fetch(
-  `${SUPABASE_URL}/rest/v1/cards?select=*&profile_slug=eq.${PROFILE_SLUG}&is_active=eq.true`,
+  `${SUPABASE_URL}/rest/v1/cards?select=*&profile_slug=eq.${PROFILE_SLUG}&&is_active=eq.true`,
   {
     headers: {
       apikey: SUPABASE_KEY,
@@ -12,6 +15,7 @@ fetch(
     }
   }
 )
+
 .then(res => res.json())
 .then(data => {
   if (!data || data.length === 0) {
