@@ -129,9 +129,9 @@
 
   <!-- Supabase -->
   <script>
-    const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
-    const SUPABASE_KEY = "YOUR_ANON_KEY";
-    const PROFILE_SLUG = "wael";
+      const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
+      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
+      const PROFILE_SLUG = "wael";
 
     fetch(
       SUPABASE_URL + "/rest/v1/cards?select=*&profile_slug=eq." + PROFILE_SLUG + "&is_active=eq.true",
