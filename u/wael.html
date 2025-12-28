@@ -208,17 +208,33 @@
         </a>
       `;
 
-      QRCode.toCanvas(
-        document.getElementById("qr"),
-        window.location.href,
-        {
-          width: 160,
-          color: {
-            dark: "#5B2D86",
-            light: "#FFFFFF"
+        const vcard = `
+        BEGIN:VCARD
+        VERSION:3.0
+        N:Alhamarnah;Wael;;Dr.;
+        FN:Dr. WAEL Alhamarnah
+        ORG:MBME GROUP
+        TITLE:${c.job_title}
+        TEL;TYPE=WORK,VOICE:${c.phone}
+        TEL;TYPE=WORK,VOICE:${c.phone} ext ${c.ext}
+        TEL;TYPE=CELL,WHATSAPP:${c.whatsapp}
+        EMAIL:${c.email}
+        END:VCARD
+        `;
+        
+        QRCode.toCanvas(
+          document.getElementById("qr"),
+          vcard.trim(),
+          {
+            width: 150,
+            margin: 2,
+            color: {
+              dark: "#5B2D86",
+              light: "#FFFFFF"
+            }
           }
-        }
-      );
+        );
+
     })
     .catch(() => {
       document.getElementById("profile").innerHTML =
