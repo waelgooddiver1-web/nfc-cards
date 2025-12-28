@@ -6,13 +6,11 @@
 <title>NFC Card</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  padding: 16px;
+  padding: 0;
   background: #f2f2f2;
   font-family: "Segoe UI", Tahoma, Arial, sans-serif;
 }
@@ -26,8 +24,6 @@ body {
   border-radius: 24px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.15);
   overflow: hidden;
-
-  /* IMPORTANT */
   display: flex;
   flex-direction: column;
 }
@@ -40,9 +36,7 @@ body {
   padding-bottom: 48px;
 }
 
-.logo {
-  width: 52px;
-}
+.logo { width: 52px; }
 
 .company {
   color: #ffffff;
@@ -84,27 +78,25 @@ body {
   margin: 4px 0 14px;
 }
 
-.info {
-  font-size: 14px;
-  color: #333;
-}
-
-.info div {
+.info a {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
 }
 
-.info span {
+.info a span {
   margin-left: 8px;
 }
 
-/* ===== QR Section ===== */
+/* ===== QR ===== */
 .qr-wrapper {
-  margin-top: auto; /* KEY FIX */
+  margin-top: auto;
   display: flex;
   justify-content: center;
-  padding-top: 20px;
+  padding: 20px 0 26px;
 }
 
 .qr {
@@ -112,24 +104,18 @@ body {
   border-radius: 16px;
   padding: 10px;
 }
-
-/* ===== Responsive ===== */
-@media (max-width: 480px) {
-  .card {
-    border-radius: 20px;
-  }
-}
 </style>
 </head>
 
 <body>
 
 <div class="card">
+
   <!-- HEADER -->
   <div class="card-header">
     <img src="./logo.png" class="logo" alt="Logo">
     <div class="company">MBME GROUP</div>
-    <img id="avatar" class="avatar" />
+    <img id="avatar" class="avatar">
   </div>
 
   <!-- BODY -->
@@ -138,19 +124,17 @@ body {
     <div class="title" id="job"></div>
 
     <div class="info">
-      <div>📞 <span id="phone"></span></div>
-      <div>💬 <span id="whatsapp"></span></div>
-      <div>✉️ <span id="email"></span></div>
+      <a id="phoneLink"><span>📞</span><span id="phone"></span></a>
+      <a id="whatsappLink"><span>💬</span><span id="whatsapp"></span></a>
+      <a id="emailLink"><span>✉️</span><span id="email"></span></a>
     </div>
 
-    <!-- QR AT BOTTOM -->
     <div class="qr-wrapper">
       <div id="qr" class="qr"></div>
     </div>
   </div>
 </div>
 
-<!-- QR -->
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
 <script>
@@ -163,7 +147,7 @@ if (!slug) {
 }
 
 const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
-      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
+const SUPABASE_KEY = "YOUR_ANON_KEY_HERE";
 
 fetch(`${SUPABASE_URL}/rest/v1/cards_with_url?profile_slug=eq.${slug}`, {
   headers: {
@@ -174,9 +158,9 @@ fetch(`${SUPABASE_URL}/rest/v1/cards_with_url?profile_slug=eq.${slug}`, {
 .then(res => res.json())
 .then(data => {
   if (!data.length) return;
-
   const u = data[0];
 
+  /* ===== Fill UI ===== */
   document.getElementById("name").textContent = u.full_name;
   document.getElementById("job").textContent = u.job_title;
   document.getElementById("phone").textContent = `${u.phone} (Ext ${u.ext})`;
@@ -184,8 +168,29 @@ fetch(`${SUPABASE_URL}/rest/v1/cards_with_url?profile_slug=eq.${slug}`, {
   document.getElementById("email").textContent = u.email;
   document.getElementById("avatar").src = u.photo_url;
 
+  /* ===== Interactive links ===== */
+  document.getElementById("phoneLink").href = `tel:${u.phone}`;
+  document.getElementById("whatsappLink").href = `https://wa.me/${u.whatsapp.replace('+','')}`;
+  document.getElementById("emailLink").href = `mailto:${u.email}`;
+
+  /* ===== vCard for QR ===== */
+  const vCard = `
+BEGIN:VCARD
+VERSION:3.0
+N:${u.full_name}
+FN:${u.full_name}
+ORG:MBME GROUP
+TITLE:${u.job_title}
+TEL;TYPE=WORK:${u.phone}
+TEL;TYPE=WORK;EXT=${u.ext}:${u.ext}
+TEL;TYPE=CELL:${u.whatsapp}
+EMAIL:${u.email}
+PHOTO;VALUE=URI:${u.photo_url}
+END:VCARD
+`.trim();
+
   new QRCode(document.getElementById("qr"), {
-    text: u.card_url,
+    text: vCard,
     width: 180,
     height: 180,
     colorDark: "#6b2fa3",
