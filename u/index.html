@@ -3,118 +3,140 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>NFC Card</title>
+<title>NFC Business Card</title>
+
+<!-- Icons -->
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<!-- QR -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 <style>
-  html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+* {
+  box-sizing: border-box;
 }
 
-* { box-sizing: border-box; }
-
 body {
-  background: #f2f2f2;
+  margin: 0;
+  padding: 0;
+  background: #f2f2f5;
   font-family: "Segoe UI", Tahoma, Arial, sans-serif;
 }
 
-
-
-/* ===== Card Wrapper ===== */
+/* ================= CARD ================= */
 .card {
   width: 100%;
   max-width: 420px;
-
-  /* الافتراضي (Desktop / iPad) */
-  min-height: 600px;
-  height: auto;
-
   margin: 0 auto;
   background: #ffffff;
   border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
   overflow: hidden;
 
   display: flex;
   flex-direction: column;
+}
 
-/* ===== Header ===== */
+/* ================= HEADER ================= */
 .card-header {
   position: relative;
   background: #1c1c1c;
-  padding: 20px;
+  padding: 22px;
   padding-bottom: 48px;
 }
 
-.logo { width: 52px; }
+.logo {
+  width: 52px;
+}
 
 .company {
-  color: #ffffff;
+  color: #fff;
   font-size: 13px;
   margin-top: 6px;
   opacity: 0.9;
 }
 
-/* ===== Profile Photo ===== */
+/* Profile photo */
 .avatar {
   position: absolute;
-  right: 20px;
-  top: 20px;
-  width: 72px;
-  height: 72px;
+  right: 18px;
+  top: 18px;
+  width: 78px;
+  height: 78px;
   border-radius: 50%;
   border: 4px solid #6b2fa3;
   object-fit: cover;
   background: #fff;
 }
 
-/* ===== Content ===== */
+/* ================= BODY ================= */
 .card-body {
-  padding: 20px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
 .name {
+  margin: 0;
   font-size: 20px;
   font-weight: 700;
-  margin: 0;
 }
 
 .title {
   color: #6b2fa3;
+  margin: 6px 0 18px;
+  font-weight: 600;
   font-size: 14px;
-  margin: 4px 0 14px;
 }
 
-.info a {
+.item {
   display: flex;
   align-items: center;
   margin-bottom: 12px;
-  font-size: 14px;
+  font-size: 15px;
   color: #333;
   text-decoration: none;
 }
 
-.info a span {
-  margin-left: 8px;
+.item i {
+  width: 26px;
+  color: #6b2fa3;
+  font-size: 16px;
+  margin-right: 10px;
 }
 
-/* ===== QR ===== */
+/* ================= QR ================= */
 .qr-wrapper {
-  margin-top: auto;
+  margin-top: auto;          /* 🔑 يثبّت QR بالأسفل */
   display: flex;
   justify-content: center;
-  padding: 20px 0 26px;
+  padding: 24px 0 28px;
 }
 
-.qr {
-  border: 4px solid #6b2fa3;
+canvas {
+  border: 6px solid #6b2fa3;
   border-radius: 16px;
-  padding: 10px;
+}
+
+/* ================= MOBILE NFC ================= */
+@media (max-width: 480px) {
+  body {
+    background: #fff;
+  }
+
+  .card {
+    height: 882px;            /* ✅ طول NFC */
+    border-radius: 0;
+  }
+}
+
+/* ================= TABLET ================= */
+@media (min-width: 768px) {
+  .card {
+    min-height: 90vh;
+  }
 }
 </style>
 </head>
@@ -125,31 +147,28 @@ body {
 
   <!-- HEADER -->
   <div class="card-header">
-    <img src="./logo.png" class="logo" alt="Logo">
+    <img src="./logo.png" class="logo" alt="MBME">
     <div class="company">MBME GROUP</div>
-    <img id="avatar" class="avatar">
+    <img id="avatar" class="avatar" />
   </div>
 
   <!-- BODY -->
-  <div class="card-body">
-    <h1 class="name" id="name"></h1>
-    <div class="title" id="job"></div>
-
-    <div class="info">
-      <a id="phoneLink"><span>📞</span><span id="phone"></span></a>
-      <a id="whatsappLink"><span>💬</span><span id="whatsapp"></span></a>
-      <a id="emailLink"><span>✉️</span><span id="email"></span></a>
-    </div>
+  <div class="card-body" id="profile">
+    <p>Loading...</p>
 
     <div class="qr-wrapper">
-      <div id="qr" class="qr"></div>
+      <div id="qrcode"></div>
     </div>
   </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
 <script>
+/* ================= CONFIG ================= */
+const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
+      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
+
+/* ================= GET SLUG ================= */
 const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug");
 
@@ -158,9 +177,7 @@ if (!slug) {
   throw new Error("No slug");
 }
 
-const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
-      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
-
+/* ================= FETCH DATA ================= */
 fetch(`${SUPABASE_URL}/rest/v1/cards_with_url?profile_slug=eq.${slug}`, {
   headers: {
     apikey: SUPABASE_KEY,
@@ -170,22 +187,37 @@ fetch(`${SUPABASE_URL}/rest/v1/cards_with_url?profile_slug=eq.${slug}`, {
 .then(res => res.json())
 .then(data => {
   if (!data.length) return;
+
   const u = data[0];
 
-  /* ===== Fill UI ===== */
-  document.getElementById("name").textContent = u.full_name;
-  document.getElementById("job").textContent = u.job_title;
-  document.getElementById("phone").textContent = `${u.phone} (Ext ${u.ext})`;
-  document.getElementById("whatsapp").textContent = u.whatsapp;
-  document.getElementById("email").textContent = u.email;
+  /* Fill UI */
   document.getElementById("avatar").src = u.photo_url;
 
-  /* ===== Interactive links ===== */
-  document.getElementById("phoneLink").href = `tel:${u.phone}`;
-  document.getElementById("whatsappLink").href = `https://wa.me/${u.whatsapp.replace('+','')}`;
-  document.getElementById("emailLink").href = `mailto:${u.email}`;
+  document.getElementById("profile").innerHTML = `
+    <h1 class="name">${u.full_name}</h1>
+    <div class="title">${u.job_title}</div>
 
-  /* ===== vCard for QR ===== */
+    <a class="item" href="tel:${u.phone}">
+      <i class="fa-solid fa-phone"></i>
+      ${u.phone} (Ext ${u.ext})
+    </a>
+
+    <a class="item" href="https://wa.me/${u.whatsapp.replace('+','')}">
+      <i class="fa-brands fa-whatsapp"></i>
+      ${u.whatsapp}
+    </a>
+
+    <a class="item" href="mailto:${u.email}">
+      <i class="fa-solid fa-envelope"></i>
+      ${u.email}
+    </a>
+
+    <div class="qr-wrapper">
+      <div id="qrcode"></div>
+    </div>
+  `;
+
+  /* ================= VCARD ================= */
   const vCard = `
 BEGIN:VCARD
 VERSION:3.0
@@ -201,13 +233,15 @@ PHOTO;VALUE=URI:${u.photo_url}
 END:VCARD
 `.trim();
 
-  new QRCode(document.getElementById("qr"), {
-    text: vCard,
-    width: 180,
-    height: 180,
-    colorDark: "#6b2fa3",
-    colorLight: "#ffffff",
-  });
+  /* ================= QR ================= */
+  QRCode.toCanvas(
+    document.createElement("canvas"),
+    vCard,
+    { width: 220 },
+    (err, canvas) => {
+      if (!err) document.getElementById("qrcode").appendChild(canvas);
+    }
+  );
 });
 </script>
 
