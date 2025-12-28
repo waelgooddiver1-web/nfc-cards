@@ -12,8 +12,9 @@
 
 <script>
 const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.XXXXXXXXXXXXXXXX";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...."; // anon legacy
 const PROFILE_SLUG = "wael";
+
 
 fetch(
   SUPABASE_URL + "/rest/v1/cards?select=*&profile_slug=eq." + PROFILE_SLUG + "&is_active=eq.true",
