@@ -1,61 +1,27 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-  <meta charset="UTF-8" />
-  <title>بطاقة أعمال رقمية</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      padding: 20px;
-      direction: rtl;
-    }
-    .card {
-      background: white;
-      max-width: 400px;
-      margin: auto;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    h1 { margin-bottom: 5px; }
-    p { margin: 5px 0; color: #555; }
-    a {
-      display: block;
-      margin: 10px 0;
-      text-decoration: none;
-      color: white;
-      background: #000;
-      padding: 10px;
-      border-radius: 6px;
-    }
-  </style>
-</head>
-<body>
-
-<div class="card" id="profile">
-  <p>جاري التحميل...</p>
-</div>
 
 <script>
 const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
 const SUPABASE_KEY = "sb_secret_my-lGxForAWY--em0EMKjQ_AGT8B_n6";
 const PROFILE_SLUG = "wael";
 
-fetch(`${SUPABASE_URL}/rest/v1/cards?profile_slug=eq.${PROFILE_SLUG}&is_active=eq.true`, {
-  headers: {
-    "apikey": SUPABASE_KEY,
-    "Authorization": "Bearer " + SUPABASE_KEY
+fetch(
+  `${SUPABASE_URL}/rest/v1/cards?select=*&profile_slug=eq.${PROFILE_SLUG}&is_active=eq.true`,
+  {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json"
+    }
   }
-})
-.then(res => res.json())
+)
+.then(response => response.json())
 .then(data => {
-  if (!data.length) {
+  console.log("Supabase response:", data); // للتأكد
+  if (!data || data.length === 0) {
     document.getElementById("profile").innerHTML = "<p>لم يتم العثور على البطاقة</p>";
     return;
   }
+
   const c = data[0];
   document.getElementById("profile").innerHTML = `
     <h1>${c.full_name}</h1>
@@ -64,8 +30,13 @@ fetch(`${SUPABASE_URL}/rest/v1/cards?profile_slug=eq.${PROFILE_SLUG}&is_active=e
     <a href="https://wa.me/${c.whatsapp}">💬 واتساب</a>
     <a href="mailto:${c.email}">✉️ بريد إلكتروني</a>
   `;
+})
+.catch(err => {
+  console.error(err);
+  document.getElementById("profile").innerHTML = "<p>خطأ في الاتصال</p>";
 });
 </script>
+
 
 </body>
 </html>
