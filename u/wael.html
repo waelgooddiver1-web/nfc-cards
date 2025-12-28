@@ -1,81 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <title>Wael Mohamed – MBME</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBME Digital Card</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   <!-- Icons -->
   <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
-  <!-- QR -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      min-height: 100vh;
       background: #f2f2f5;
       font-family: "Segoe UI", Tahoma, sans-serif;
-      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
 
-    /* Page container fills screen */
-    .page {
-      max-width: 420px;
-      margin: 0 auto;
-    }
-
-    /* Card */
     .card {
-      background: linear-gradient(135deg, #1e1e1e 45%, #ffffff 45%);
-      border-radius: 22px;
-      box-shadow: 0 20px 40px rgba(0,0,0,.25);
-      overflow: hidden;
       width: 100%;
+      max-width: 420px;
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      overflow: hidden;
+      position: relative;
     }
 
-    /* Header */
     .header {
-      position: relative;
-      padding: 22px;
+      height: 140px;
+      background: linear-gradient(135deg, #1e1e1e 70%, #ffffff 70%);
+      padding: 20px;
       color: #fff;
-      min-height: 120px;
+      position: relative;
     }
 
     .logo {
-      width: 54px;
-      margin-bottom: 8px;
+      width: 55px;
     }
 
     .company {
       font-size: 13px;
-      opacity: .85;
-      letter-spacing: 1px;
+      opacity: 0.85;
+      margin-top: 6px;
     }
 
-    /* Profile photo */
-    .avatar {
+    .photo {
       position: absolute;
-      right: 16px;
-      top: 16px;
-      width: 78px;
-      height: 78px;
+      right: 20px;
+      bottom: -45px;
+      width: 90px;
+      height: 90px;
       border-radius: 50%;
-      border: 4px solid #5B2D86;
-      background: #fff;
+      border: 4px solid #5b2d86;
       object-fit: cover;
+      background: #fff;
     }
 
-    /* Content */
     .content {
-      background: #fff;
-      padding: 24px;
+      padding: 70px 24px 24px;
     }
 
     h1 {
@@ -85,7 +71,7 @@
     }
 
     .title {
-      color: #5B2D86;
+      color: #5b2d86;
       font-weight: 600;
       margin: 6px 0 18px;
       font-size: 14px;
@@ -94,7 +80,6 @@
     .item {
       display: flex;
       align-items: center;
-      gap: 10px;
       margin: 10px 0;
       color: #333;
       text-decoration: none;
@@ -102,66 +87,57 @@
     }
 
     .item i {
-      color: #5B2D86;
-      font-size: 16px;
-      width: 20px;
+      width: 26px;
+      color: #5b2d86;
+      font-size: 15px;
     }
 
-    /* QR */
     .qr {
-      margin-top: 24px;
       text-align: center;
+      margin-top: 20px;
     }
 
     canvas {
-      border: 6px solid #5B2D86;
+      border: 6px solid #5b2d86;
       border-radius: 14px;
       padding: 6px;
-      max-width: 100%;
-    }
-
-    /* Responsive tweak */
-    @media (max-width: 480px) {
-      .avatar {
-        width: 68px;
-        height: 68px;
-      }
     }
   </style>
 </head>
 
 <body>
 
-<div class="page">
-  <div class="card">
+<div class="card">
 
-    <!-- Header -->
-    <div class="header">
-      <img src="logo.png" class="logo" alt="MBME Logo">
-      <div class="company">MBME GROUP</div>
-
-      <!-- Profile image from DB -->
-      <img id="avatar" class="avatar" src="" alt="Profile Photo">
-    </div>
-
-    <!-- Content -->
-    <div class="content">
-      <div id="profile">Loading...</div>
-
-      <div class="qr">
-        <canvas id="qr"></canvas>
-      </div>
-    </div>
-
+  <div class="header">
+    <img src="logo.png" class="logo" alt="MBME Logo">
+    <div class="company">MBME GROUP</div>
+    <img id="profile-photo" class="photo" alt="Profile Photo">
   </div>
+
+  <div class="content">
+    <div id="profile">
+      <p>Loading...</p>
+    </div>
+
+    <div class="qr">
+      <canvas id="qr"></canvas>
+    </div>
+  </div>
+
 </div>
 
-<script>
-      const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
-      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
-      const PROFILE_SLUG = "wael";
+<!-- QR -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
-fetch(`${SUPABASE_URL}/rest/v1/cards?select=*&profile_slug=eq.${PROFILE_SLUG}&is_active=eq.true`, {
+<script>
+const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
+
+// 🔹 استخرج profile_slug من الرابط
+const slug = window.location.pathname.split("/").pop().replace(".html", "");
+
+fetch(`${SUPABASE_URL}/rest/v1/cards_with_url?profile_slug=eq.${slug}`, {
   headers: {
     apikey: SUPABASE_KEY,
     Authorization: `Bearer ${SUPABASE_KEY}`
@@ -170,13 +146,16 @@ fetch(`${SUPABASE_URL}/rest/v1/cards?select=*&profile_slug=eq.${PROFILE_SLUG}&is
 .then(res => res.json())
 .then(data => {
   if (!data || data.length === 0) {
-    document.getElementById("profile").innerHTML = "No data found";
+    document.getElementById("profile").innerHTML = "<p>User not found</p>";
     return;
   }
 
   const c = data[0];
 
-  // Fill profile
+  // صورة شخصية
+  document.getElementById("profile-photo").src = c.photo_url;
+
+  // بيانات البطاقة
   document.getElementById("profile").innerHTML = `
     <h1>${c.full_name}</h1>
     <div class="title">${c.job_title}</div>
@@ -186,7 +165,7 @@ fetch(`${SUPABASE_URL}/rest/v1/cards?select=*&profile_slug=eq.${PROFILE_SLUG}&is
       ${c.phone} ${c.ext ? `(Ext ${c.ext})` : ""}
     </a>
 
-    <a class="item" href="https://wa.me/${c.whatsapp.replace('+','')}">
+    <a class="item" href="https://wa.me/${c.whatsapp}">
       <i class="fa-brands fa-whatsapp"></i>
       ${c.whatsapp}
     </a>
@@ -197,34 +176,31 @@ fetch(`${SUPABASE_URL}/rest/v1/cards?select=*&profile_slug=eq.${PROFILE_SLUG}&is
     </a>
   `;
 
-  // Avatar
-  if (c.photo_url) {
-    document.getElementById("avatar").src = c.photo_url;
-  }
-
-  // vCard QR
+  // 🔹 vCard
   const vcard = `
 BEGIN:VCARD
 VERSION:3.0
-N:${c.full_name}
 FN:${c.full_name}
-ORG:MBME Group
 TITLE:${c.job_title}
 TEL;TYPE=WORK:${c.phone}
-TEL;TYPE=CELL:${c.whatsapp}
 EMAIL:${c.email}
-END:VCARD`;
+END:VCARD
+  `.trim();
 
-  QRCode.toCanvas(document.getElementById("qr"), vcard, {
-    width: 160,
-    color: {
-      dark: "#5B2D86",
-      light: "#FFFFFF"
+  QRCode.toCanvas(
+    document.getElementById("qr"),
+    vcard,
+    {
+      width: 150,
+      color: {
+        dark: "#5b2d86",
+        light: "#ffffff"
+      }
     }
-  });
+  );
 })
 .catch(() => {
-  document.getElementById("profile").innerHTML = "Connection error";
+  document.getElementById("profile").innerHTML = "<p>Connection error</p>";
 });
 </script>
 
