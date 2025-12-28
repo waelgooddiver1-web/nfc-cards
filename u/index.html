@@ -1,209 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>NFC Card</title>
+  <meta charset="UTF-8" />
+  <title>NFC Business Card</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-* {
-  box-sizing: border-box;
-}
+  <!-- Icons -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
-body {
-  margin: 0;
-  padding: 16px;
-  background: #f2f2f2;
-  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-}
+  <!-- QR -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
-/* ===== Card Wrapper ===== */
-.card {
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto;
-  background: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-  overflow: hidden;
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-  /* IMPORTANT */
-  display: flex;
-  flex-direction: column;
-}
+    body {
+      margin: 0;
+      background: #f2f2f5;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
 
-/* ===== Header ===== */
-.card-header {
-  position: relative;
-  background: #1c1c1c;
-  padding: 20px;
-  padding-bottom: 48px;
-}
+    .card {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 0 0 22px 22px;
+      overflow: hidden;
+      box-shadow: 0 18px 35px rgba(0,0,0,0.25);
+    }
 
-.logo {
-  width: 52px;
-}
+    /* HEADER */
+    .header {
+      position: relative;
+      background: linear-gradient(135deg, #1c1c1c 70%, transparent 70%);
+      padding: 22px;
+      height: 130px;
+    }
 
-.company {
-  color: #ffffff;
-  font-size: 13px;
-  margin-top: 6px;
-  opacity: 0.9;
-}
+    .logo {
+      width: 54px;
+      margin-bottom: 6px;
+    }
 
-/* Diagonal cut 
-.card-header::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 80%;
-  height: 42px;
-  background: #ffffff;
-  clip-path: polygon(100% 0, 0 100%, 100% 100%);
-}*/
+    .company {
+      color: #ddd;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
 
-/* ===== Profile Photo ===== */
-.avatar {
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  border: 4px solid #6b2fa3;
-  object-fit: cover;
-  background: #fff;
-}
+    .profile-pic {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      border: 4px solid #6b2fa3;
+      object-fit: cover;
+      background: #fff;
+    }
 
-/* ===== Content ===== */
-.card-body {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
+    /* CONTENT */
+    .content {
+      padding: 22px;
+    }
 
-.name {
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0;
-}
+    h1 {
+      margin: 0;
+      font-size: 20px;
+    }
 
-.title {
-  color: #6b2fa3;
-  font-size: 14px;
-  margin: 4px 0 14px;
-}
+    .title {
+      color: #6b2fa3;
+      margin: 6px 0 18px;
+      font-weight: 600;
+    }
 
-.info {
-  font-size: 14px;
-  color: #333;
-}
+    .item {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+      font-size: 15px;
+      color: #333;
+      text-decoration: none;
+    }
 
-.info div {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
+    .item i {
+      width: 26px;
+      color: #6b2fa3;
+      font-size: 16px;
+      margin-right: 10px;
+    }
 
-.info span {
-  margin-left: 8px;
-}
+    /* QR */
+    .qr {
+      display: flex;
+      justify-content: center;
+      padding: 22px 0 30px;
+    }
 
-/* ===== QR Section ===== */
-.qr-wrapper {
-  margin-top: auto; /* KEY FIX */
-  display: flex;
-  justify-content: center;
-  padding-top: 20px;
-}
-
-.qr {
-  border: 4px solid #6b2fa3;
-  border-radius: 16px;
-  padding: 10px;
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 480px) {
-  .card {
-    border-radius: 20px;
-  }
-}
-</style>
+    canvas {
+      border: 6px solid #6b2fa3;
+      border-radius: 14px;
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="card">
+
   <!-- HEADER -->
-  <div class="card-header">
-    <img src="./logo.png" class="logo" alt="Logo">
+  <div class="header">
+    <img src="logo.png" class="logo" alt="MBME">
     <div class="company">MBME GROUP</div>
-    <img id="avatar" class="avatar" />
+
+    <!-- الصورة الشخصية من Supabase -->
+    <img id="photo" class="profile-pic" />
   </div>
 
-  <!-- BODY -->
-  <div class="card-body">
-    <h1 class="name" id="name"></h1>
-    <div class="title" id="job"></div>
-
-    <div class="info">
-      <div>📞 <span id="phone"></span></div>
-      <div>💬 <span id="whatsapp"></span></div>
-      <div>✉️ <span id="email"></span></div>
-    </div>
-
-    <!-- QR AT BOTTOM -->
-    <div class="qr-wrapper">
-      <div id="qr" class="qr"></div>
-    </div>
+  <!-- CONTENT -->
+  <div class="content" id="profile">
+    <p>Loading...</p>
   </div>
+
+  <!-- QR -->
+  <div class="qr">
+    <div id="qrcode"></div>
+  </div>
+
 </div>
 
-<!-- QR -->
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
 <script>
-const params = new URLSearchParams(window.location.search);
-const slug = params.get("slug");
+/* ===============================
+   بيانات من Supabase (مثال ثابت)
+   لاحقًا يمكن ربطه بـ fetch
+================================ */
 
-if (!slug) {
-  document.body.innerHTML = "<h2>User not found</h2>";
-  throw new Error("No slug");
-}
+const data = {
+  full_name: "Dr. WAEL ALhamarnah",
+  first_name: "WAEL",
+  last_name: "ALhamarnah",
+  job_title: "VP - Project Management | PMO",
+  company: "MBME Group",
+  phone: "+97124199000",
+  ext: "309",
+  whatsapp: "+971506772889",
+  email: "wael.mohamed@mbmegroup.ae",
+  photo_url: "https://pdtzqjgjprvgajdxkzqd.supabase.co/storage/v1/object/public/profile/wael.jpg"
+};
 
-const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
-      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
+/* عرض البيانات */
+document.getElementById("photo").src = data.photo_url;
 
-fetch(`${SUPABASE_URL}/rest/v1/cards_with_url?profile_slug=eq.${slug}`, {
-  headers: {
-    apikey: SUPABASE_KEY,
-    Authorization: `Bearer ${SUPABASE_KEY}`,
-  },
-})
-.then(res => res.json())
-.then(data => {
-  if (!data.length) return;
+document.getElementById("profile").innerHTML = `
+  <h1>${data.full_name}</h1>
+  <div class="title">${data.job_title}</div>
 
-  const u = data[0];
+  <a class="item" href="tel:${data.phone}">
+    <i class="fa-solid fa-phone"></i>
+    ${data.phone} (Ext ${data.ext})
+  </a>
 
-  document.getElementById("name").textContent = u.full_name;
-  document.getElementById("job").textContent = u.job_title;
-  document.getElementById("phone").textContent = `${u.phone} (Ext ${u.ext})`;
-  document.getElementById("whatsapp").textContent = u.whatsapp;
-  document.getElementById("email").textContent = u.email;
-  document.getElementById("avatar").src = u.photo_url;
+  <a class="item" href="https://wa.me/${data.whatsapp.replace('+','')}">
+    <i class="fa-brands fa-whatsapp"></i>
+    ${data.whatsapp}
+  </a>
 
-  new QRCode(document.getElementById("qr"), {
-    text: u.card_url,
-    width: 180,
-    height: 180,
-    colorDark: "#6b2fa3",
-    colorLight: "#ffffff",
-  });
-});
+  <a class="item" href="mailto:${data.email}">
+    <i class="fa-solid fa-envelope"></i>
+    ${data.email}
+  </a>
+`;
+
+/* vCard مع صورة */
+const vCard = `
+BEGIN:VCARD
+VERSION:3.0
+N:${data.last_name};${data.first_name};;Dr.;
+FN:${data.full_name}
+ORG:${data.company}
+TITLE:${data.job_title}
+TEL;TYPE=WORK:${data.phone}
+TEL;TYPE=WORK;EXT=${data.ext}:${data.ext}
+TEL;TYPE=CELL:${data.whatsapp}
+EMAIL:${data.email}
+PHOTO;VALUE=URI:${data.photo_url}
+END:VCARD
+`.trim();
+
+/* توليد QR */
+QRCode.toCanvas(
+  document.createElement("canvas"),
+  vCard,
+  { width: 220 },
+  (err, canvas) => {
+    if (!err) document.getElementById("qrcode").appendChild(canvas);
+  }
+);
 </script>
 
 </body>
