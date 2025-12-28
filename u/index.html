@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>NFC Business Card</title>
+  <title> MBME Business Card</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Icons -->
@@ -13,9 +13,7 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -33,7 +31,6 @@
       box-shadow: 0 18px 35px rgba(0,0,0,0.25);
     }
 
-    /* HEADER */
     .header {
       position: relative;
       background: linear-gradient(135deg, #1c1c1c 70%, transparent 70%);
@@ -41,15 +38,12 @@
       height: 130px;
     }
 
-    .logo {
-      width: 54px;
-      margin-bottom: 6px;
-    }
-
+    .logo { width: 54px; }
     .company {
       color: #ddd;
       font-size: 13px;
       letter-spacing: 1px;
+      margin-top: 6px;
     }
 
     .profile-pic {
@@ -64,15 +58,9 @@
       background: #fff;
     }
 
-    /* CONTENT */
-    .content {
-      padding: 22px;
-    }
+    .content { padding: 22px; }
 
-    h1 {
-      margin: 0;
-      font-size: 20px;
-    }
+    h1 { margin: 0; font-size: 20px; }
 
     .title {
       color: #6b2fa3;
@@ -92,11 +80,9 @@
     .item i {
       width: 26px;
       color: #6b2fa3;
-      font-size: 16px;
       margin-right: 10px;
     }
 
-    /* QR */
     .qr {
       display: flex;
       justify-content: center;
@@ -114,21 +100,16 @@
 
 <div class="card">
 
-  <!-- HEADER -->
   <div class="header">
     <img src="logo.png" class="logo" alt="MBME">
     <div class="company">MBME GROUP</div>
-
-    <!-- الصورة الشخصية من Supabase -->
     <img id="photo" class="profile-pic" />
   </div>
 
-  <!-- CONTENT -->
   <div class="content" id="profile">
     <p>Loading...</p>
   </div>
 
-  <!-- QR -->
   <div class="qr">
     <div id="qrcode"></div>
   </div>
@@ -136,83 +117,65 @@
 </div>
 
 <script>
-// 🔹 رابط الصورة من Supabase Storage (Public)
-const photoUrl   = "https://pdtzqjgjprvgajdxkzqd.supabase.co/storage/v1/object/public/profile/wael.jpg";
+/* 🔹 Supabase Config */
+const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
+      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
 
-const vCard = `
-BEGIN:VCARD
-VERSION:3.0
-N:${lastName};${firstName};;Dr.;
-FN:${fullName}
-ORG:${company}
-TITLE:${title}
-TEL;TYPE=WORK:${phoneWork}
-TEL;TYPE=WORK;EXT=${ext}:${ext}
-TEL;TYPE=CELL:${phoneCell}
-EMAIL:${email}
-PHOTO;VALUE=URI:${photoUrl}
-END:VCARD
-`.trim();
-
-QRCode.toCanvas(
-  document.createElement("canvas"),
-  vCard,
-  { width: 220 },
-  function (err, canvas) {
-    if (err) console.error(err);
-    document.getElementById("qrcode").appendChild(canvas);
+/* 🔹 Fetch Card */
+fetch(`${SUPABASE_URL}/rest/v1/cards?profile_slug=eq.${SLUG}&is_active=eq.true&select=*`, {
+  headers: {
+    apikey: SUPABASE_KEY,
+    Authorization: `Bearer ${SUPABASE_KEY}`
   }
-);
-</script>
+})
+.then(res => res.json())
+.then(([data]) => {
+  if (!data) return;
 
-/* عرض البيانات */
-document.getElementById("photo").src = data.photo_url;
+  /* الصورة */
+  const photo = document.getElementById("photo");
+  photo.src = data.photo_url;
+  photo.onerror = () => photo.style.display = "none";
 
-document.getElementById("profile").innerHTML = `
-  <h1>${data.full_name}</h1>
-  <div class="title">${data.job_title}</div>
+  /* البيانات */
+  document.getElementById("profile").innerHTML = `
+    <h1>${data.full_name}</h1>
+    <div class="title">${data.job_title}</div>
 
-  <a class="item" href="tel:${data.phone}">
-    <i class="fa-solid fa-phone"></i>
-    ${data.phone} (Ext ${data.ext})
-  </a>
+    <a class="item" href="tel:${data.phone}">
+      <i class="fa-solid fa-phone"></i>
+      ${data.phone} (Ext ${data.ext})
+    </a>
 
-  <a class="item" href="https://wa.me/${data.whatsapp.replace('+','')}">
-    <i class="fa-brands fa-whatsapp"></i>
-    ${data.whatsapp}
-  </a>
+    <a class="item" href="https://wa.me/${data.whatsapp.replace('+','')}">
+      <i class="fa-brands fa-whatsapp"></i>
+      ${data.whatsapp}
+    </a>
 
-  <a class="item" href="mailto:${data.email}">
-    <i class="fa-solid fa-envelope"></i>
-    ${data.email}
-  </a>
-`;
+    <a class="item" href="mailto:${data.email}">
+      <i class="fa-solid fa-envelope"></i>
+      ${data.email}
+    </a>
+  `;
 
-/* vCard مع صورة */
-const vCard = `
+  /* vCard */
+  const vCard = `
 BEGIN:VCARD
 VERSION:3.0
-N:${data.last_name};${data.first_name};;Dr.;
 FN:${data.full_name}
-ORG:${data.company}
+ORG:MBME GROUP
 TITLE:${data.job_title}
 TEL;TYPE=WORK:${data.phone}
-TEL;TYPE=WORK;EXT=${data.ext}:${data.ext}
 TEL;TYPE=CELL:${data.whatsapp}
 EMAIL:${data.email}
 PHOTO;VALUE=URI:${data.photo_url}
 END:VCARD
 `.trim();
 
-/* توليد QR */
-QRCode.toCanvas(
-  document.createElement("canvas"),
-  vCard,
-  { width: 220 },
-  (err, canvas) => {
+  QRCode.toCanvas(vCard, { width: 220 }, (err, canvas) => {
     if (!err) document.getElementById("qrcode").appendChild(canvas);
-  }
-);
+  });
+});
 </script>
 
 </body>
