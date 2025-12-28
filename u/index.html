@@ -136,23 +136,34 @@
 </div>
 
 <script>
-/* ===============================
-   بيانات من Supabase (مثال ثابت)
-   لاحقًا يمكن ربطه بـ fetch
-================================ */
+// 🔹 رابط الصورة من Supabase Storage (Public)
+const photoUrl   = "https://pdtzqjgjprvgajdxkzqd.supabase.co/storage/v1/object/public/profile/wael.jpg";
 
-const data = {
-  full_name: "Dr. WAEL ALhamarnah",
-  first_name: "WAEL",
-  last_name: "ALhamarnah",
-  job_title: "VP - Project Management | PMO",
-  company: "MBME Group",
-  phone: "+97124199000",
-  ext: "309",
-  whatsapp: "+971506772889",
-  email: "wael.mohamed@mbmegroup.ae",
-  photo_url: "https://pdtzqjgjprvgajdxkzqd.supabase.co/storage/v1/object/public/profile/wael.jpg"
-};
+const vCard = `
+BEGIN:VCARD
+VERSION:3.0
+N:${lastName};${firstName};;Dr.;
+FN:${fullName}
+ORG:${company}
+TITLE:${title}
+TEL;TYPE=WORK:${phoneWork}
+TEL;TYPE=WORK;EXT=${ext}:${ext}
+TEL;TYPE=CELL:${phoneCell}
+EMAIL:${email}
+PHOTO;VALUE=URI:${photoUrl}
+END:VCARD
+`.trim();
+
+QRCode.toCanvas(
+  document.createElement("canvas"),
+  vCard,
+  { width: 220 },
+  function (err, canvas) {
+    if (err) console.error(err);
+    document.getElementById("qrcode").appendChild(canvas);
+  }
+);
+</script>
 
 /* عرض البيانات */
 document.getElementById("photo").src = data.photo_url;
