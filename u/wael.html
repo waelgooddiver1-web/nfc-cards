@@ -3,6 +3,181 @@
 <head>
   <meta charset="UTF-8">
   <title>بطاقة أعمال رقمية</title>
+   <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- CSS -->
+  <style>
+    body {
+      margin: 0;
+      background: #f2f2f5;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      width: 360px;
+      background: linear-gradient(135deg, #1E1E1E 45%, #ffffff 45%);
+      border-radius: 18px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+
+    /* الشعار */
+    .header {
+      padding: 24px;
+      color: #fff;
+    }
+
+    .logo {
+      width: 60px;
+      margin-bottom: 12px;
+    }
+
+    .company {
+      font-size: 14px;
+      letter-spacing: 1px;
+      opacity: 0.85;
+    }
+
+    /* المحتوى */
+    .content {
+      padding: 24px;
+      background: #fff;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      color: #000;
+    }
+
+    .title {
+      color: #5B2D86;
+      font-weight: 600;
+      margin: 6px 0 20px;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+      color: #333;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .item i {
+      width: 28px;
+      color: #5B2D86;
+      font-size: 16px;
+    }
+
+    .qr {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    canvas {
+      border: 6px solid #5B2D86;
+      border-radius: 12px;
+      padding: 6px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+
+    <!-- الهيدر / الشعار -->
+    <div class="header">
+      <!-- ضع شعار MBME هنا -->
+      <img src="logo.png" class="logo" alt="MBME Logo">
+      <div class="company">MBME GROUP</div>
+    </div>
+
+    <!-- البيانات -->
+    <div class="content">
+      <div id="profile">
+        <p>جاري التحميل...</p>
+      </div>
+
+      <div class="qr">
+        <canvas id="qr"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- QR Library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+  <!-- Supabase Script -->
+  <script>
+    const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
+    const SUPABASE_KEY = "ضع_المفتاح_هنا";
+    const PROFILE_SLUG = "wael";
+
+    fetch(
+      `${SUPABASE_URL}/rest/v1/cards?select=*&profile_slug=eq.${PROFILE_SLUG}&is_active=eq.true`,
+      {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`
+        }
+      }
+    )
+    .then(res => res.json())
+    .then(data => {
+      if (!data || data.length === 0) {
+        document.getElementById("profile").innerHTML =
+          "<p>لم يتم العثور على البطاقة</p>";
+        return;
+      }
+
+      const c = data[0];
+
+      document.getElementById("profile").innerHTML = `
+        <h1>${c.full_name}</h1>
+        <div class="title">${c.job_title}</div>
+
+        <a class="item" href="tel:${c.phone}">
+          <i class="fa-solid fa-phone"></i> اتصال
+        </a>
+
+        <a class="item" href="https://wa.me/${c.whatsapp}">
+          <i class="fa-brands fa-whatsapp"></i> واتساب
+        </a>
+
+        <a class="item" href="mailto:${c.email}">
+          <i class="fa-solid fa-envelope"></i> بريد إلكتروني
+        </a>
+      `;
+
+      QRCode.toCanvas(
+        document.getElementById("qr"),
+        window.location.href,
+        {
+          width: 130,
+          color: {
+            dark: "#5B2D86",
+            light: "#FFFFFF"
+          }
+        }
+      );
+    })
+    .catch(() => {
+      document.getElementById("profile").innerHTML =
+        "<p>خطأ في الاتصال</p>";
+    });
+  </script>
+
+</body>
+</html>
 </head>
 <body>
 
@@ -45,53 +220,3 @@ fetch(
   document.getElementById("profile").innerHTML = "<p>خطأ في الاتصال</p>";
 });
 </script>
-
-</body>
-</html>
-<style>
-  body {
-    background-color: #f0f0f0; /* هنا نختار اللون اللي تحبه */
-    font-family: Arial, sans-serif;
-    text-align: center;
-  }
-  .card {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    margin: 20px auto;
-    width: 300px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  .card img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-  }
-  .card h1 {
-    margin: 10px 0 5px;
-    font-size: 1.5em;
-  }
-  .card p {
-    margin: 0 0 10px;
-    color: #666;
-  }
-  .icons a {
-    display: block;
-    margin: 5px 0;
-    text-decoration: none;
-    color: #007bff;
-  }
-</style>
-
-<div class="card">
-  <img src="your-photo-url.jpg" alt="صورتك" />
-  <h1>wael mohamed hassan</h1>
-  <p>PM</p>
-  <div class="icons">
-    <a href="tel:97150...">📞 اتصال</a>
-    <a href="https://wa.me/97150...">💬 واتساب</a>
-    <a href="mailto:youremail@example.com">✉️ بريد إلكتروني</a>
-  </div>
-</div>
