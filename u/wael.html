@@ -1,246 +1,190 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <title>Wael Mohamed – MBME</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBME – Digital Card</title>
 
   <!-- Icons -->
   <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- QR -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
   <style>
-    :root {
-      --purple: #5B2D86;
-      --dark: #1E1E1E;
-      --bg: #f2f2f5;
+    body{
+      margin:0;
+      background:#f2f2f5;
+      font-family:"Segoe UI",Tahoma,sans-serif;
+      display:flex;
+      justify-content:flex-start;
+      padding:40px;
     }
 
-    * {
-      box-sizing: border-box;
+    .card{
+      width:100%;
+      max-width:380px;
+      background:linear-gradient(135deg,#1e1e1e 42%,#ffffff 42%);
+      border-radius:20px;
+      box-shadow:0 20px 40px rgba(0,0,0,.25);
+      overflow:hidden;
     }
 
-    body {
-      margin: 0;
-      background: var(--bg);
-      font-family: "Segoe UI", Tahoma, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 20px;
+    .header{
+      padding:24px;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      gap:14px;
     }
 
-    /* Card */
-    .card {
-      width: 100%;
-      max-width: 380px;
-      background: linear-gradient(135deg, var(--dark) 42%, #ffffff 42%);
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-      overflow: hidden;
+    .logo{
+      width:55px;
     }
 
-    /* Header */
-    .header {
-      padding: 22px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #fff;
+    .company{
+      font-size:14px;
+      opacity:.9;
     }
 
-    .logo {
-      width: 56px;
-      height: auto;
-      flex-shrink: 0;
+    .content{
+      background:#fff;
+      padding:24px;
     }
 
-    .company {
-      font-size: 13px;
-      letter-spacing: 1px;
-      opacity: 0.9;
+    h1{
+      margin:0;
+      font-size:20px;
     }
 
-    /* Content */
-    .content {
-      background: #fff;
-      padding: 22px;
+    .title{
+      color:#5B2D86;
+      font-weight:600;
+      margin-bottom:18px;
     }
 
-    h1 {
-      margin: 0;
-      font-size: clamp(18px, 4vw, 22px);
-      color: #000;
+    .item{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:10px 0;
+      color:#333;
+      text-decoration:none;
+      font-size:14px;
     }
 
-    .title {
-      margin: 6px 0 18px;
-      color: var(--purple);
-      font-weight: 600;
-      font-size: clamp(13px, 3.5vw, 15px);
+    .item i{
+      color:#5B2D86;
+      width:18px;
     }
 
-    .item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 10px 0;
-      color: #333;
-      text-decoration: none;
-      font-size: clamp(13px, 3.5vw, 14px);
-      word-break: break-word;
+    .qr{
+      text-align:left;
+      margin-top:20px;
     }
 
-    .item i {
-      color: var(--purple);
-      font-size: 16px;
-      width: 18px;
-      flex-shrink: 0;
-    }
-
-    .ext {
-      font-size: 12px;
-      color: #777;
-    }
-
-    /* QR */
-    .qr {
-      margin-top: 22px;
-      display: flex;
-      justify-content: flex-start;
-    }
-
-    canvas {
-      width: 100%;
-      max-width: 160px;
-      height: auto;
-      border: 6px solid var(--purple);
-      border-radius: 14px;
-      padding: 6px;
-    }
-
-    /* Small screens */
-    @media (max-width: 480px) {
-      body {
-        justify-content: center;
-      }
-
-      .qr {
-        justify-content: center;
-      }
+    canvas{
+      border:6px solid #5B2D86;
+      border-radius:12px;
+      padding:6px;
+      max-width:100%;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="card">
+<div class="card">
 
-    <!-- Header -->
-    <div class="header">
-      <img src="logo.png" class="logo" alt="MBME Logo">
-      <div class="company">MBME GROUP</div>
-    </div>
-
-    <!-- Content -->
-    <div class="content">
-      <div id="profile">
-        <p>Loading...</p>
-      </div>
-
-      <div class="qr">
-        <canvas id="qr"></canvas>
-      </div>
-    </div>
-
+  <div class="header">
+    <img src="logo.png" class="logo" alt="MBME">
+    <div class="company">MBME GROUP</div>
   </div>
 
-  <!-- QR -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <div class="content">
+    <div id="profile">Loading...</div>
 
-  <!-- Supabase -->
-  <script>
+    <div class="qr">
+      <canvas id="qr"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
       const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
       const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
       const PROFILE_SLUG = "wael";
 
-    fetch(
-      SUPABASE_URL +
-      "/rest/v1/cards?select=*&profile_slug=eq." +
-      PROFILE_SLUG +
-      "&is_active=eq.true",
-      {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: "Bearer " + SUPABASE_KEY
-        }
+fetch(`${SUPABASE_URL}/rest/v1/cards?select=*&profile_slug=eq.${PROFILE_SLUG}&is_active=eq.true`, {
+  headers: {
+    apikey: SUPABASE_KEY,
+    Authorization: `Bearer ${SUPABASE_KEY}`
+  }
+})
+.then(res => res.json())
+.then(data => {
+
+  if (!data || data.length === 0) {
+    document.getElementById("profile").innerHTML = "No data found";
+    return;
+  }
+
+  const c = data[0];
+
+  // HTML Card
+  document.getElementById("profile").innerHTML = `
+    <h1>${c.full_name}</h1>
+    <div class="title">${c.job_title}</div>
+
+    <div class="item">
+      <i class="fa-solid fa-phone"></i>
+      ${c.phone} ${c.ext ? `(Ext ${c.ext})` : ""}
+    </div>
+
+    <div class="item">
+      <i class="fa-brands fa-whatsapp"></i>
+      ${c.whatsapp}
+    </div>
+
+    <div class="item">
+      <i class="fa-solid fa-envelope"></i>
+      ${c.email}
+    </div>
+  `;
+
+  // vCard from DB
+  const vCard = `
+BEGIN:VCARD
+VERSION:3.0
+N:${c.full_name.split(" ").reverse().join(";")};;;
+FN:${c.full_name}
+ORG:MBME GROUP
+TITLE:${c.job_title}
+TEL;TYPE=WORK,VOICE:${c.phone}
+${c.ext ? `TEL;TYPE=WORK,VOICE:${c.phone};EXT=${c.ext}` : ""}
+TEL;TYPE=CELL,WHATSAPP:${c.whatsapp}
+EMAIL:${c.email}
+END:VCARD
+  `.trim();
+
+  QRCode.toCanvas(
+    document.getElementById("qr"),
+    vCard,
+    {
+      width:150,
+      color:{
+        dark:"#5B2D86",
+        light:"#FFFFFF"
       }
-    )
-    .then(res => res.json())
-    .then(data => {
-      if (!data || data.length === 0) {
-        document.getElementById("profile").innerHTML =
-          "<p>Profile not found</p>";
-        return;
-      }
-
-      const c = data[0];
-
-      document.getElementById("profile").innerHTML = `
-        <h1>${c.full_name}</h1>
-        <div class="title">${c.job_title}</div>
-
-        <a class="item" href="tel:${c.phone}">
-          <i class="fa-solid fa-phone"></i>
-          ${c.phone}
-          ${c.ext ? `<span class="ext">(Ext ${c.ext})</span>` : ""}
-        </a>
-
-        <a class="item" href="https://wa.me/${c.whatsapp}">
-          <i class="fa-brands fa-whatsapp"></i>
-          ${c.whatsapp}
-        </a>
-
-        <a class="item" href="mailto:${c.email}">
-          <i class="fa-solid fa-envelope"></i>
-          ${c.email}
-        </a>
-      `;
-
-        const vcard = `
-        BEGIN:VCARD
-        VERSION:3.0
-        N:Alhamarnah;Wael;;Dr.;
-        FN:Dr. WAEL Alhamarnah
-        ORG:MBME GROUP
-        TITLE:${c.job_title}
-        TEL;TYPE=WORK,VOICE:${c.phone}
-        TEL;TYPE=WORK,VOICE:${c.phone} ext ${c.ext}
-        TEL;TYPE=CELL,WHATSAPP:${c.whatsapp}
-        EMAIL:${c.email}
-        END:VCARD
-        `;
-        
-        QRCode.toCanvas(
-          document.getElementById("qr"),
-          vcard.trim(),
-          {
-            width: 150,
-            margin: 2,
-            color: {
-              dark: "#5B2D86",
-              light: "#FFFFFF"
-            }
-          }
-        );
-
-    })
-    .catch(() => {
-      document.getElementById("profile").innerHTML =
-        "<p>Connection error</p>";
-    });
-  </script>
+    }
+  );
+})
+.catch(err=>{
+  console.error(err);
+  document.getElementById("profile").innerHTML="Connection error";
+});
+</script>
 
 </body>
 </html>
