@@ -26,13 +26,6 @@ body {
   background: #f2f2f5;
   font-family: "Segoe UI", Tahoma, Arial, sans-serif;
 }
-  <!-- BODY -->
-  <div class="card-body" id="profile">
-    ...
-  </div>
-
-  <!-- Bottom Color Bar -->
-  <div class="color-bar"></div>
 
 /* ================= CARD ================= */
 .card {
@@ -125,9 +118,11 @@ body {
 /* ================= MESSAGE ================= */
 .message {
   margin-top: 14px;
+  margin-bottom: 10px;
+  text-align: center;
   font-style: italic;
   font-size: 14px;
-  color: #555;
+  color: #B61E72;
 }
 
 /* ================= QR ================= */
@@ -187,8 +182,8 @@ canvas {
 
 <script>
 /* ================= CONFIG ================= */
-      const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
-      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
+const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
+const SUPABASE_KEY = "YOUR_ANON_KEY";
 
 /* ================= GET SLUG ================= */
 const params = new URLSearchParams(window.location.search);
@@ -248,7 +243,6 @@ fetch(`${SUPABASE_URL}/rest/v1/cards_with_url?profile_slug=eq.${slug}`, {
     </div>
   `;
 
-  /* ================= VCARD ================= */
   const vCard = `
 BEGIN:VCARD
 VERSION:3.0
