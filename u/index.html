@@ -7,7 +7,7 @@
 
 <!-- Favicon -->
 <link rel="icon" href="/nfc-cards/u/logo.ico" type="image/x-icon">
-  
+
 <!-- Icons -->
 <link rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -18,11 +18,6 @@
 <style>
 * {
   box-sizing: border-box;
-}
-.color-bar {
-  width: 100%;
-  height: 50px;
-  background-color: #B61E72;
 }
 
 body {
@@ -41,7 +36,6 @@ body {
   border-radius: 24px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.18);
   overflow: hidden;
-<div class="color-bar"></div>
   display: flex;
   flex-direction: column;
 }
@@ -115,9 +109,23 @@ body {
   margin-right: 10px;
 }
 
+.item a {
+  color: #6b2fa3;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* ================= MESSAGE ================= */
+.message {
+  margin-top: 14px;
+  font-style: italic;
+  font-size: 14px;
+  color: #555;
+}
+
 /* ================= QR ================= */
 .qr-wrapper {
-  margin-top: auto;          /* 🔑 يثبّت QR بالأسفل */
+  margin-top: auto;
   display: flex;
   justify-content: center;
   padding: 24px 0 28px;
@@ -128,6 +136,13 @@ canvas {
   border-radius: 16px;
 }
 
+/* ================= COLOR BAR ================= */
+.color-bar {
+  width: 100%;
+  height: 50px;
+  background-color: #B61E72;
+}
+
 /* ================= MOBILE NFC ================= */
 @media (max-width: 480px) {
   body {
@@ -135,15 +150,8 @@ canvas {
   }
 
   .card {
-    height: 882px;            /* ✅ طول NFC */
+    height: 882px;
     border-radius: 0;
-  }
-}
-
-/* ================= TABLET ================= */
-@media (min-width: 768px) {
-  .card {
-    min-height: 90vh;
   }
 }
 </style>
@@ -163,17 +171,16 @@ canvas {
   <!-- BODY -->
   <div class="card-body" id="profile">
     <p>Loading...</p>
-
-    <div class="qr-wrapper">
-      <div id="qrcode"></div>
-    </div>
   </div>
+
+  <!-- COLOR BAR -->
+  <div class="color-bar"></div>
 
 </div>
 
 <script>
 /* ================= CONFIG ================= */
-const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
+      const SUPABASE_URL = "https://pdtzqjgjprvgajdxkzqd.supabase.co";
       const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdHpxamdqcHJ2Z2FqZHhrenFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTY4NzcsImV4cCI6MjA4MjQ5Mjg3N30.3azWCfjT3IqyO4QQGCRpwIBsoOHCq7TqvebUEBOoVsY"; // anon legacy
 
 /* ================= GET SLUG ================= */
@@ -195,10 +202,8 @@ fetch(`${SUPABASE_URL}/rest/v1/cards_with_url?profile_slug=eq.${slug}`, {
 .then(res => res.json())
 .then(data => {
   if (!data.length) return;
-
   const u = data[0];
 
-  /* Fill UI */
   document.getElementById("avatar").src = u.photo_url;
 
   document.getElementById("profile").innerHTML = `
@@ -210,7 +215,7 @@ fetch(`${SUPABASE_URL}/rest/v1/cards_with_url?profile_slug=eq.${slug}`, {
       ${u.phone} (Ext ${u.ext})
     </a>
 
-    <a class="item" href="https://wa.me/${u.whatsapp.replace('+','')}">
+    <a class="item" href="https://wa.me/${u.whatsapp.replace('+','')}" target="_blank">
       <i class="fa-brands fa-whatsapp"></i>
       ${u.whatsapp}
     </a>
@@ -219,6 +224,17 @@ fetch(`${SUPABASE_URL}/rest/v1/cards_with_url?profile_slug=eq.${slug}`, {
       <i class="fa-solid fa-envelope"></i>
       ${u.email}
     </a>
+
+    <div class="item">
+      <i class="fa-solid fa-globe"></i>
+      <a href="${u.company_url}" target="_blank">
+        ${u.company_url.replace('https://','')}
+      </a>
+    </div>
+
+    <div class="message">
+      We are pleased and honored to engage with you
+    </div>
 
     <div class="qr-wrapper">
       <div id="qrcode"></div>
@@ -238,10 +254,10 @@ TEL;TYPE=WORK;EXT=${u.ext}:${u.ext}
 TEL;TYPE=CELL:${u.whatsapp}
 EMAIL:${u.email}
 PHOTO;VALUE=URI:${u.photo_url}
+URL:${u.company_url}
 END:VCARD
 `.trim();
 
-  /* ================= QR ================= */
   QRCode.toCanvas(
     document.createElement("canvas"),
     vCard,
